@@ -1,6 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
-import { Plus, TrendingDown, TrendingUp, LogOut, User } from "lucide-react";
+import { Plus, TrendingDown, TrendingUp, LogOut, User, WifiOff } from "lucide-react";
+import { useOnline } from "@/lib/use-online";
 import { toast } from "sonner";
 import {
   formatCurrency,
