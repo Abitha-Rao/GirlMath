@@ -1,3 +1,5 @@
+import { supabase } from "@/integrations/supabase/client";
+
 export type CategoryId =
   | "food"
   | "transport"
@@ -19,7 +21,7 @@ export interface Expense {
 export interface Category {
   id: CategoryId;
   label: string;
-  colorVar: string; // css variable name
+  colorVar: string;
 }
 
 export const CATEGORIES: Category[] = [
@@ -35,22 +37,75 @@ export const CATEGORIES: Category[] = [
 export const getCategory = (id: CategoryId) =>
   CATEGORIES.find((c) => c.id === id) ?? CATEGORIES[6];
 
-const STORAGE_KEY = "expenses.v1";
+const VALID = new Set<CategoryId>(CATEGORIES.map((c) => c.id));
+const toCategoryId = (raw: string): CategoryId =>
+  (VALID.has(raw as CategoryId) ? (raw as CategoryId) : "other");
 
-export const loadExpenses = (): Expense[] => {
-  if (typeof window === "undefined") return [];
-  try {
-    const raw = localStorage.getItem(STORAGE_KEY);
-    if (!raw) return [];
-    return JSON.parse(raw) as Expense[];
-  } catch {
-    return [];
-  }
+interface Row {
+  id: string;
+  amount: number | string;
+  category: string;
+  note: string | null;
+  date: string;
+  created_at: string;
+}
+
+const rowToExpense = (r: Row): Expense => ({
+  id: r.id,
+  amount: typeof r.amount === "string" ? parseFloat(r.amount) : r.amount,
+  categoryId: toCategoryId(r.category),
+  note: r.note ?? undefined,
+  date: r.date,
+  createdAt: new Date(r.created_at).getTime(),
+});
+
+export const fetchExpenses = async (): Promise<Expense[]> => {
+  const { data, error } = await supabase
+    .from("expenses")
+    .select("id, amount, category, note, date, created_at")
+    .order("date", { ascending: false });
+  if (error) throw error;
+  return (data as Row[]).map(rowToExpense);
 };
 
-export const saveExpenses = (list: Expense[]) => {
-  if (typeof window === "undefined") return;
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(list));
+export const insertExpense = async (
+  e: Omit<Expense, "id" | "createdAt">,
+  userId: string,
+): Promise<Expense> => {
+  const { data, error } = await supabase
+    .from("expenses")
+    .insert({
+      user_id: userId,
+      amount: e.amount,
+      category: e.categoryId,
+      note: e.note ?? null,
+      date: e.date,
+    })
+    .select("id, amount, category, note, date, created_at")
+    .single();
+  if (error) throw error;
+  return rowToExpense(data as Row);
+};
+
+export const updateExpense = async (e: Expense): Promise<Expense> => {
+  const { data, error } = await supabase
+    .from("expenses")
+    .update({
+      amount: e.amount,
+      category: e.categoryId,
+      note: e.note ?? null,
+      date: e.date,
+    })
+    .eq("id", e.id)
+    .select("id, amount, category, note, date, created_at")
+    .single();
+  if (error) throw error;
+  return rowToExpense(data as Row);
+};
+
+export const deleteExpense = async (id: string): Promise<void> => {
+  const { error } = await supabase.from("expenses").delete().eq("id", id);
+  if (error) throw error;
 };
 
 export const formatCurrency = (n: number) =>
