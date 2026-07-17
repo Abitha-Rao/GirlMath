@@ -145,6 +145,11 @@ function Home() {
 
   return (
     <div className="min-h-screen bg-background text-foreground">
+      {!online && (
+        <div className="sticky top-0 z-40 bg-destructive/15 border-b border-destructive/25 text-destructive-foreground text-xs px-4 py-2 flex items-center justify-center gap-2 backdrop-blur">
+          <WifiOff size={13} /> You're offline — changes can't be saved right now.
+        </div>
+      )}
       <div className="mx-auto max-w-md px-5 pt-10 pb-32">
         <header className="mb-8">
           <div className="flex items-center justify-between">
