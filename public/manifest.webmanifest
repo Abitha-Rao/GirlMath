@@ -1,0 +1,15 @@
+{
+  "name": "Ledger — Expense Tracker",
+  "short_name": "Ledger",
+  "description": "A calmer personal expense tracker.",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#1a1c22",
+  "theme_color": "#1a1c22",
+  "icons": [
+    { "src": "/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
+}
