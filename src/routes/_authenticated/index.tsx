@@ -1,34 +1,28 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
-import { Plus, TrendingDown, TrendingUp } from "lucide-react";
+import { Plus, TrendingDown, TrendingUp, LogOut, User } from "lucide-react";
+import { toast } from "sonner";
 import {
   formatCurrency,
-  loadExpenses,
-  saveExpenses,
+  fetchExpenses,
+  insertExpense,
+  updateExpense,
+  deleteExpense,
   type Expense,
 } from "@/lib/expenses";
 import { AddExpenseSheet } from "@/components/AddExpenseSheet";
 import { ExpenseRow } from "@/components/ExpenseRow";
+import { supabase } from "@/integrations/supabase/client";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
-export const Route = createFileRoute("/")({
-  head: () => ({
-    meta: [
-      { title: "Ledger — A calmer expense tracker" },
-      {
-        name: "description",
-        content:
-          "Log expenses in seconds. A minimal, premium personal expense tracker with a focused dark aesthetic.",
-      },
-      { property: "og:title", content: "Ledger — A calmer expense tracker" },
-      {
-        property: "og:description",
-        content:
-          "Log expenses in seconds. A minimal, premium personal expense tracker.",
-      },
-      { property: "og:type", content: "website" },
-      { name: "twitter:card", content: "summary_large_image" },
-    ],
-  }),
+export const Route = createFileRoute("/_authenticated/")({
   component: Home,
 });
 
@@ -65,19 +59,18 @@ function dayLabel(day: string) {
 }
 
 function Home() {
+  const { user } = Route.useRouteContext();
   const [expenses, setExpenses] = useState<Expense[]>([]);
   const [open, setOpen] = useState(false);
   const [editing, setEditing] = useState<Expense | null>(null);
-  const [mounted, setMounted] = useState(false);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    setExpenses(loadExpenses());
-    setMounted(true);
+    fetchExpenses()
+      .then(setExpenses)
+      .catch((e) => toast.error(e.message ?? "Failed to load expenses"))
+      .finally(() => setLoading(false));
   }, []);
-
-  useEffect(() => {
-    if (mounted) saveExpenses(expenses);
-  }, [expenses, mounted]);
 
   const now = new Date();
   const thisMonth = now.getMonth();
@@ -102,22 +95,45 @@ function Home() {
 
   const grouped = useMemo(() => groupByDay(expenses), [expenses]);
 
-  const save = (e: Expense) => {
-    setExpenses((list) => {
-      const idx = list.findIndex((x) => x.id === e.id);
-      if (idx >= 0) {
-        const copy = [...list];
-        copy[idx] = e;
-        return copy;
+  const save = async (e: Expense) => {
+    try {
+      const existing = expenses.find((x) => x.id === e.id);
+      if (existing) {
+        const updated = await updateExpense(e);
+        setExpenses((list) => list.map((x) => (x.id === updated.id ? updated : x)));
+      } else {
+        const created = await insertExpense(
+          {
+            amount: e.amount,
+            categoryId: e.categoryId,
+            note: e.note,
+            date: e.date,
+          },
+          user.id,
+        );
+        setExpenses((list) => [created, ...list]);
       }
-      return [e, ...list];
-    });
-    setOpen(false);
-    setEditing(null);
+      setOpen(false);
+      setEditing(null);
+    } catch (err) {
+      toast.error((err as Error).message ?? "Save failed");
+    }
   };
 
-  const remove = (id: string) => {
+  const remove = async (id: string) => {
+    const prev = expenses;
     setExpenses((list) => list.filter((e) => e.id !== id));
+    try {
+      await deleteExpense(id);
+    } catch (err) {
+      setExpenses(prev);
+      toast.error((err as Error).message ?? "Delete failed");
+    }
+  };
+
+  const signOut = async () => {
+    await supabase.auth.signOut();
+    window.location.href = "/auth";
   };
 
   const monthLabel = now.toLocaleDateString(undefined, {
@@ -128,13 +144,31 @@ function Home() {
   return (
     <div className="min-h-screen bg-background text-foreground">
       <div className="mx-auto max-w-md px-5 pt-10 pb-32">
-        {/* Header */}
         <header className="mb-8">
           <div className="flex items-center justify-between">
-            <div className="text-sm tracking-wide text-muted-foreground">
-              Ledger
+            <div className="text-sm tracking-wide text-muted-foreground">Ledger</div>
+            <div className="flex items-center gap-3">
+              <div className="text-xs text-muted-foreground">{monthLabel}</div>
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <button
+                    aria-label="Account menu"
+                    className="h-8 w-8 rounded-full bg-white/[0.05] hover:bg-white/[0.1] flex items-center justify-center text-foreground/80 transition"
+                  >
+                    <User size={15} />
+                  </button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end" className="min-w-[220px]">
+                  <DropdownMenuLabel className="truncate">
+                    {user.email}
+                  </DropdownMenuLabel>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem onClick={signOut}>
+                    <LogOut size={14} className="mr-2" /> Sign out
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
             </div>
-            <div className="text-xs text-muted-foreground">{monthLabel}</div>
           </div>
 
           <div className="mt-8">
@@ -143,10 +177,7 @@ function Home() {
             </div>
             <div
               className="mt-2 num font-semibold text-primary"
-              style={{
-                fontSize: "clamp(2.75rem, 11vw, 4rem)",
-                lineHeight: 1.05,
-              }}
+              style={{ fontSize: "clamp(2.75rem, 11vw, 4rem)", lineHeight: 1.05 }}
             >
               {formatCurrency(monthly.curr)}
             </div>
@@ -176,8 +207,11 @@ function Home() {
           </div>
         </header>
 
-        {/* List */}
-        {grouped.length === 0 ? (
+        {loading ? (
+          <div className="mt-24 text-center text-xs text-muted-foreground">
+            Loading…
+          </div>
+        ) : grouped.length === 0 ? (
           <div className="mt-24 text-center">
             <div className="mx-auto h-14 w-14 rounded-2xl bg-surface flex items-center justify-center mb-4">
               <Plus className="text-muted-foreground" size={22} />
@@ -221,7 +255,6 @@ function Home() {
         )}
       </div>
 
-      {/* FAB */}
       <button
         onClick={() => {
           setEditing(null);
