@@ -61,6 +61,7 @@ function dayLabel(day: string) {
 
 function Home() {
   const { user } = Route.useRouteContext();
+  const online = useOnline();
   const [expenses, setExpenses] = useState<Expense[]>([]);
   const [open, setOpen] = useState(false);
   const [editing, setEditing] = useState<Expense | null>(null);
