@@ -239,7 +239,9 @@ function Home() {
             </div>
           </div>
         ) : (
-          <div className="space-y-7">
+          <>
+            <CategoryBreakdown expenses={monthExpenses} />
+            <div className="space-y-7">
             {grouped.map(({ day, items }) => {
               const total = items.reduce((s, e) => s + e.amount, 0);
               return (
