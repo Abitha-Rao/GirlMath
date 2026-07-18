@@ -87,7 +87,7 @@ function AuthPage() {
     <div className="min-h-screen bg-background text-foreground flex items-center justify-center px-5">
       <div className="w-full max-w-sm">
         <div className="text-center mb-8">
-          <div className="text-2xl font-semibold tracking-tight text-primary num">Ledger</div>
+          <div className="text-2xl font-semibold tracking-tight text-primary num">girlMath</div>
           <div className="mt-1 text-xs text-muted-foreground tracking-wide">
             A calmer expense tracker
           </div>
