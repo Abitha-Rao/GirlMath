@@ -1,13 +1,12 @@
 import { supabase } from "@/integrations/supabase/client";
 
 export type CategoryId =
-  | "food"
-  | "transport"
-  | "shopping"
   | "bills"
-  | "entertainment"
-  | "health"
-  | "other";
+  | "groceries"
+  | "transport"
+  | "fun"
+  | "food"
+  | "others";
 
 export interface Expense {
   id: string;
@@ -25,21 +24,31 @@ export interface Category {
 }
 
 export const CATEGORIES: Category[] = [
-  { id: "food", label: "Food", colorVar: "--cat-food" },
-  { id: "transport", label: "Transport", colorVar: "--cat-transport" },
-  { id: "shopping", label: "Shopping", colorVar: "--cat-shopping" },
   { id: "bills", label: "Bills", colorVar: "--cat-bills" },
-  { id: "entertainment", label: "Fun", colorVar: "--cat-entertainment" },
-  { id: "health", label: "Health", colorVar: "--cat-health" },
-  { id: "other", label: "Other", colorVar: "--cat-other" },
+  { id: "groceries", label: "Groceries", colorVar: "--cat-groceries" },
+  { id: "transport", label: "Transport", colorVar: "--cat-transport" },
+  { id: "fun", label: "Fun", colorVar: "--cat-fun" },
+  { id: "food", label: "Food", colorVar: "--cat-food" },
+  { id: "others", label: "Others", colorVar: "--cat-others" },
 ];
 
 export const getCategory = (id: CategoryId) =>
-  CATEGORIES.find((c) => c.id === id) ?? CATEGORIES[6];
+  CATEGORIES.find((c) => c.id === id) ?? CATEGORIES[5];
 
 const VALID = new Set<CategoryId>(CATEGORIES.map((c) => c.id));
-const toCategoryId = (raw: string): CategoryId =>
-  (VALID.has(raw as CategoryId) ? (raw as CategoryId) : "other");
+
+// Migrate legacy category strings from earlier versions.
+const LEGACY: Record<string, CategoryId> = {
+  shopping: "others",
+  entertainment: "fun",
+  health: "others",
+  other: "others",
+};
+
+const toCategoryId = (raw: string): CategoryId => {
+  if (VALID.has(raw as CategoryId)) return raw as CategoryId;
+  return LEGACY[raw] ?? "others";
+};
 
 interface Row {
   id: string;
