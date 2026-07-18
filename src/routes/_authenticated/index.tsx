@@ -13,6 +13,7 @@ import {
 } from "@/lib/expenses";
 import { AddExpenseSheet } from "@/components/AddExpenseSheet";
 import { ExpenseRow } from "@/components/ExpenseRow";
+import { CategoryBreakdown } from "@/components/CategoryBreakdown";
 import { supabase } from "@/integrations/supabase/client";
 import {
   DropdownMenu,
