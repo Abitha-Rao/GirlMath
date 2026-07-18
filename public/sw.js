@@ -1,6 +1,6 @@
-// Minimal app-shell service worker for Ledger.
+// Minimal app-shell service worker for girlMath.
 // Network-first for navigations, cache-first for same-origin static assets.
-const CACHE = "ledger-shell-v1";
+const CACHE = "girlmath-shell-v1";
 const SHELL = ["/", "/auth", "/icon-512.png", "/manifest.webmanifest"];
 
 self.addEventListener("install", (e) => {
