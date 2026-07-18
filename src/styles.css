@@ -89,13 +89,12 @@
   --ring: oklch(0.72 0.19 32 / 0.6);
 
   /* Category tints */
-  --cat-food: oklch(0.78 0.16 55);
-  --cat-transport: oklch(0.75 0.14 220);
-  --cat-shopping: oklch(0.75 0.16 320);
   --cat-bills: oklch(0.78 0.14 160);
-  --cat-entertainment: oklch(0.72 0.18 280);
-  --cat-health: oklch(0.76 0.15 20);
-  --cat-other: oklch(0.72 0.02 260);
+  --cat-groceries: oklch(0.85 0.17 120);
+  --cat-transport: oklch(0.75 0.14 220);
+  --cat-fun: oklch(0.72 0.18 300);
+  --cat-food: oklch(0.78 0.16 55);
+  --cat-others: oklch(0.72 0.02 260);
 }
 
 @layer base {
