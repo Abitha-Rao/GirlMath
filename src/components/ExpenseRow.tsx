@@ -16,21 +16,28 @@ export function ExpenseRow({ expense, onEdit, onDelete }: Props) {
   const [offset, setOffset] = useState(0);
   const startX = useRef<number | null>(null);
   const startOffset = useRef(0);
+  const moved = useRef(0);
   const cat = getCategory(expense.categoryId);
 
   const onStart = (x: number) => {
     startX.current = x;
     startOffset.current = offset;
+    moved.current = 0;
   };
   const onMove = (x: number) => {
     if (startX.current === null) return;
     const dx = x - startX.current;
+    moved.current = Math.max(moved.current, Math.abs(dx));
     const next = Math.min(0, Math.max(-MAX, startOffset.current + dx));
     setOffset(next);
   };
   const onEnd = () => {
+    const wasTap = moved.current < 6;
     startX.current = null;
     setOffset((o) => (o < -MAX / 2 ? -MAX : 0));
+    if (wasTap && offset === 0) {
+      onEdit(expense);
+    }
   };
 
   const time = new Date(expense.date).toLocaleTimeString([], {
