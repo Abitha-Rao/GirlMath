@@ -1,23 +1,21 @@
 import type { CategoryId } from "@/lib/expenses";
 import {
-  UtensilsCrossed,
-  Bus,
-  ShoppingBag,
   Receipt,
+  ShoppingBasket,
+  Bus,
   Music,
-  HeartPulse,
+  UtensilsCrossed,
   Sparkles,
 } from "lucide-react";
 
 const MAP = {
-  food: UtensilsCrossed,
-  transport: Bus,
-  shopping: ShoppingBag,
   bills: Receipt,
-  entertainment: Music,
-  health: HeartPulse,
-  other: Sparkles,
-} as const;
+  groceries: ShoppingBasket,
+  transport: Bus,
+  fun: Music,
+  food: UtensilsCrossed,
+  others: Sparkles,
+} as const satisfies Record<CategoryId, unknown>;
 
 interface Props {
   id: CategoryId;

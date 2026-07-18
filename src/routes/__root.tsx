@@ -82,13 +82,13 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
           "width=device-width, initial-scale=1, viewport-fit=cover",
       },
       { name: "theme-color", content: "#1a1c22" },
-      { title: "Ledger — A calmer expense tracker" },
+      { title: "girlMath — A calmer expense tracker" },
       {
         name: "description",
         content:
           "Log expenses in seconds. A minimal, premium personal expense tracker.",
       },
-      { property: "og:title", content: "Ledger — A calmer expense tracker" },
+      { property: "og:title", content: "girlMath — A calmer expense tracker" },
       {
         property: "og:description",
         content:
@@ -99,7 +99,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { name: "apple-mobile-web-app-capable", content: "yes" },
       { name: "mobile-web-app-capable", content: "yes" },
       { name: "apple-mobile-web-app-status-bar-style", content: "black-translucent" },
-      { name: "apple-mobile-web-app-title", content: "Ledger" },
+      { name: "apple-mobile-web-app-title", content: "girlMath" },
     ],
     links: [
       { rel: "stylesheet", href: appCss },
