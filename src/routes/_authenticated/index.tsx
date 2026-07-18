@@ -154,7 +154,7 @@ function Home() {
       <div className="mx-auto max-w-md px-5 pt-10 pb-32">
         <header className="mb-8">
           <div className="flex items-center justify-between">
-            <div className="text-sm tracking-wide text-muted-foreground">Ledger</div>
+            <div className="text-sm tracking-wide text-muted-foreground">girlMath</div>
             <div className="flex items-center gap-3">
               <div className="text-xs text-muted-foreground">{monthLabel}</div>
               <DropdownMenu>
