@@ -1,6 +1,6 @@
 {
-  "name": "Ledger — Expense Tracker",
-  "short_name": "Ledger",
+  "name": "girlMath — Expense Tracker",
+  "short_name": "girlMath",
   "description": "A calmer personal expense tracker.",
   "start_url": "/",
   "scope": "/",
