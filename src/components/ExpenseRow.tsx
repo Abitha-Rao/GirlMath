@@ -76,9 +76,8 @@ export function ExpenseRow({ expense, onEdit, onDelete }: Props) {
         onMouseDown={(e) => onStart(e.clientX)}
         onMouseMove={(e) => e.buttons === 1 && onMove(e.clientX)}
         onMouseUp={onEnd}
-        onMouseLeave={onEnd}
-        onDoubleClick={() => setOffset(offset === 0 ? -MAX : 0)}
-        className="relative flex items-center gap-3.5 py-2.5 px-2.5 rounded-2xl bg-surface hover:bg-surface-elevated transition-colors select-none cursor-grab active:cursor-grabbing"
+        onMouseLeave={() => { if (startX.current !== null) { startX.current = null; setOffset((o) => (o < -MAX / 2 ? -MAX : 0)); } }}
+        className="relative flex items-center gap-3.5 py-2.5 px-2.5 rounded-2xl bg-surface hover:bg-surface-elevated transition-colors select-none cursor-pointer"
         style={{
           transform: `translateX(${offset}px)`,
           transition:
