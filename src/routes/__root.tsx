@@ -100,6 +100,10 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { name: "mobile-web-app-capable", content: "yes" },
       { name: "apple-mobile-web-app-status-bar-style", content: "black-translucent" },
       { name: "apple-mobile-web-app-title", content: "girlMath" },
+      { name: "twitter:title", content: "girlMath — A calmer expense tracker" },
+      { name: "twitter:description", content: "Log expenses in seconds. A minimal, premium personal expense tracker." },
+      { property: "og:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/4fefc181-2b2e-4d33-a6f8-f6a1a537d83f/id-preview-a7812833--97fb5bab-c6b4-4df4-b567-a6331cf7f2fa.lovable.app-1784389375084.png" },
+      { name: "twitter:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/4fefc181-2b2e-4d33-a6f8-f6a1a537d83f/id-preview-a7812833--97fb5bab-c6b4-4df4-b567-a6331cf7f2fa.lovable.app-1784389375084.png" },
     ],
     links: [
       { rel: "stylesheet", href: appCss },
