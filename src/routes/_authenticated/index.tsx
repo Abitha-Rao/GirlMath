@@ -98,6 +98,15 @@ function Home() {
 
   const grouped = useMemo(() => groupByDay(expenses), [expenses]);
 
+  const monthExpenses = useMemo(
+    () =>
+      expenses.filter((e) => {
+        const d = new Date(e.date);
+        return d.getFullYear() === thisYear && d.getMonth() === thisMonth;
+      }),
+    [expenses, thisMonth, thisYear],
+  );
+
   const save = async (e: Expense) => {
     try {
       const existing = expenses.find((x) => x.id === e.id);
