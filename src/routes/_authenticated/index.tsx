@@ -25,6 +25,24 @@ import {
 } from "@/components/ui/dropdown-menu";
 
 export const Route = createFileRoute("/_authenticated/")({
+  head: () => ({
+    meta: [
+      { title: "Your expenses — girlMath" },
+      {
+        name: "description",
+        content:
+          "Your girlMath dashboard: this month's total, a category breakdown and every expense grouped by day, ready to edit in a tap.",
+      },
+      { property: "og:title", content: "Your expenses — girlMath" },
+      {
+        property: "og:description",
+        content:
+          "See your monthly total, category breakdown and daily expense history in one calm dashboard.",
+      },
+      { property: "og:url", content: "https://luxe-cents.lovable.app/" },
+    ],
+    links: [{ rel: "canonical", href: "https://luxe-cents.lovable.app/" }],
+  }),
   component: Home,
 });
 
@@ -163,7 +181,7 @@ function Home() {
       <div className="mx-auto max-w-md px-5 pt-10 pb-32">
         <header className="mb-8">
           <div className="flex items-center justify-between">
-            <div className="text-sm tracking-wide text-muted-foreground">girlMath</div>
+            <h1 className="text-sm tracking-wide text-muted-foreground">girlMath</h1>
             <div className="flex items-center gap-3">
               <div className="text-xs text-muted-foreground">{monthLabel}</div>
               <DropdownMenu>

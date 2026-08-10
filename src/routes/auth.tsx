@@ -5,6 +5,24 @@ import { lovable } from "@/integrations/lovable";
 
 export const Route = createFileRoute("/auth")({
   ssr: false,
+  head: () => ({
+    meta: [
+      { title: "Sign in — girlMath expense tracker" },
+      {
+        name: "description",
+        content:
+          "Sign in or create a free girlMath account to track daily expenses, categories and monthly spending in one calm dashboard.",
+      },
+      { property: "og:title", content: "Sign in to girlMath" },
+      {
+        property: "og:description",
+        content:
+          "Access your girlMath expense tracker — email or Google sign-in, and your spending history stays private to you.",
+      },
+      { property: "og:url", content: "https://luxe-cents.lovable.app/auth" },
+    ],
+    links: [{ rel: "canonical", href: "https://luxe-cents.lovable.app/auth" }],
+  }),
   beforeLoad: async () => {
     const { data } = await supabase.auth.getUser();
     if (data.user) throw redirect({ to: "/" });
@@ -87,7 +105,9 @@ function AuthPage() {
     <div className="min-h-screen bg-background text-foreground flex items-center justify-center px-5">
       <div className="w-full max-w-sm">
         <div className="text-center mb-8">
-          <div className="text-2xl font-semibold tracking-tight text-primary num">girlMath</div>
+          <h1 className="text-2xl font-semibold tracking-tight text-primary num">
+            girlMath
+          </h1>
           <div className="mt-1 text-xs text-muted-foreground tracking-wide">
             A calmer expense tracker
           </div>
@@ -117,7 +137,11 @@ function AuthPage() {
           </div>
 
           <form onSubmit={submit} className="space-y-3">
+            <label htmlFor="email" className="sr-only">
+              Email
+            </label>
             <input
+              id="email"
               type="email"
               required
               autoComplete="email"
@@ -126,7 +150,11 @@ function AuthPage() {
               onChange={(e) => setEmail(e.target.value)}
               className="w-full h-11 rounded-2xl bg-white/[0.04] border border-white/[0.06] px-4 text-sm placeholder:text-muted-foreground/60 focus:outline-none focus:border-white/20 transition"
             />
+            <label htmlFor="password" className="sr-only">
+              Password
+            </label>
             <input
+              id="password"
               type="password"
               required
               minLength={6}
