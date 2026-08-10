@@ -25,6 +25,24 @@ import {
 } from "@/components/ui/dropdown-menu";
 
 export const Route = createFileRoute("/_authenticated/")({
+  head: () => ({
+    meta: [
+      { title: "Your expenses — girlMath" },
+      {
+        name: "description",
+        content:
+          "Your girlMath dashboard: this month's total, a category breakdown and every expense grouped by day, ready to edit in a tap.",
+      },
+      { property: "og:title", content: "Your expenses — girlMath" },
+      {
+        property: "og:description",
+        content:
+          "See your monthly total, category breakdown and daily expense history in one calm dashboard.",
+      },
+      { property: "og:url", content: "https://luxe-cents.lovable.app/" },
+    ],
+    links: [{ rel: "canonical", href: "https://luxe-cents.lovable.app/" }],
+  }),
   component: Home,
 });
 
