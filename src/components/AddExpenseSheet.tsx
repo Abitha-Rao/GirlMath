@@ -151,6 +151,7 @@ export function AddExpenseSheet({ open, onClose, onSave, editing }: Props) {
             <button
               key={k}
               onClick={() => press(k)}
+              aria-label={k === "back" ? "Delete last digit" : `Digit ${k}`}
               className="h-14 rounded-2xl text-xl font-medium num text-foreground hover:bg-white/[0.05] active:scale-[0.97] active:bg-white/[0.08] transition-all"
             >
               {k === "back" ? (
