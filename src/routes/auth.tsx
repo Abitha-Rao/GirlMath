@@ -137,7 +137,11 @@ function AuthPage() {
           </div>
 
           <form onSubmit={submit} className="space-y-3">
+            <label htmlFor="email" className="sr-only">
+              Email
+            </label>
             <input
+              id="email"
               type="email"
               required
               autoComplete="email"
@@ -146,7 +150,11 @@ function AuthPage() {
               onChange={(e) => setEmail(e.target.value)}
               className="w-full h-11 rounded-2xl bg-white/[0.04] border border-white/[0.06] px-4 text-sm placeholder:text-muted-foreground/60 focus:outline-none focus:border-white/20 transition"
             />
+            <label htmlFor="password" className="sr-only">
+              Password
+            </label>
             <input
+              id="password"
               type="password"
               required
               minLength={6}
