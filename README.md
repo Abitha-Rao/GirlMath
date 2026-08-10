@@ -1,4 +1,4 @@
-# Zenith Ledger
+# Girl Math
 
 Build a personal expense tracker web app with a premium, minimal aesthetic — think Linear meets a modern fintech app (Cash App, Copilot Money). Not generic Material Design.
 
