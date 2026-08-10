@@ -5,6 +5,24 @@ import { lovable } from "@/integrations/lovable";
 
 export const Route = createFileRoute("/auth")({
   ssr: false,
+  head: () => ({
+    meta: [
+      { title: "Sign in — girlMath expense tracker" },
+      {
+        name: "description",
+        content:
+          "Sign in or create a free girlMath account to track daily expenses, categories and monthly spending in one calm dashboard.",
+      },
+      { property: "og:title", content: "Sign in to girlMath" },
+      {
+        property: "og:description",
+        content:
+          "Access your girlMath expense tracker — email or Google sign-in, and your spending history stays private to you.",
+      },
+      { property: "og:url", content: "https://luxe-cents.lovable.app/auth" },
+    ],
+    links: [{ rel: "canonical", href: "https://luxe-cents.lovable.app/auth" }],
+  }),
   beforeLoad: async () => {
     const { data } = await supabase.auth.getUser();
     if (data.user) throw redirect({ to: "/" });
