@@ -1,54 +1,75 @@
-# Girl Math
+# girlMath: a personal expense tracker
 
-Build a personal expense tracker web app with a premium, minimal aesthetic — think Linear meets a modern fintech app (Cash App, Copilot Money). Not generic Material Design.
+A small web app for logging what you spend and seeing where the month's money went. It is dark, minimal and built for a phone: open it, tap the add button, type an amount, pick a category, done. Amounts are shown in Indian rupees (₹).
 
-Design direction:
+**Try it:** https://luxe-cents.lovable.app (sign in with Google, or create an account with an email and password)
 
-Dark mode by default, with a rich near-black background (not pure black) — something like deep charcoal or midnight navy
+## Who it is for
 
-One confident accent color (e.g., a warm coral or electric lime) used sparingly — for the add button, active states, and the monthly total number
+One person tracking their own day-to-day spending by hand, who wants something quicker and calmer than a spreadsheet. It is not a budgeting tool and does not connect to a bank.
 
-Generous whitespace, large type for numbers (the amount should feel like the hero of every screen), smaller/muted type for metadata (dates, categories)
+## What it does
 
-Rounded corners, soft shadows, subtle depth — avoid flat/basic card layouts
+- **Monthly total up top.** The home screen shows what you have spent this month, with a percentage change against last month once last month has data.
+- **Category breakdown.** A ring chart splits this month's spending across six fixed categories: Bills, Groceries, Transport, Fun, Food and Others.
+- **Expenses by day.** Every expense is listed under its date, newest first.
+- **Fast entry.** The add button opens a sheet with an amount, a row of category icons, an optional note and a date that defaults to today.
+- **Edit and delete.** Tap an expense to change it, or delete it.
+- **Private accounts.** Each person signs in and sees only their own expenses.
+- **Installable on a phone.** From the live site, use your browser's "Add to Home Screen" to get an app icon. If you lose your connection the app tells you, and changes cannot be saved until you are back online.
 
-Micro-interactions: smooth transitions when adding an expense, a satisfying tap animation on the add button, list items that gently slide/fade in
+## What you need
 
-Custom category icons (not default icon-library look) — simple, consistent line-style icons in a soft rounded container with a faint tint of a category color
+- [Node.js](https://nodejs.org) with npm. I checked the commands below with Node 26; the repo does not pin a version.
+- A [Supabase](https://supabase.com) project. Supabase is the hosted service that stores the accounts and the expenses. The app reads three settings to find it: `VITE_SUPABASE_URL`, `VITE_SUPABASE_PUBLISHABLE_KEY` and `VITE_SUPABASE_PROJECT_ID`.
 
-Core functionality:
+The repo's `.env` file already holds these settings for the project behind the live app, so a local copy talks to that same database. The key in it is the "publishable" kind, which is meant to be visible in a web app; what protects each person's data is the per-user access rule described under Privacy. To use your own database instead, create a Supabase project, apply the file in [supabase/migrations](supabase/migrations), and put your own project's values in `.env`.
 
-Home screen: Large monthly total at top (e.g., "₹24,500 this month"), small trend indicator if possible, then a chronological list of expenses grouped by day with date headers
+## Run it on your computer
 
-Add expense: A floating action button (bottom right) opens a fast-entry view — amount input (numeric keypad, large font), a horizontal scrollable row of category icons to tap, optional note field, defaults to today's date. Should be completable in 2 taps + amount entry.
+```bash
+git clone https://github.com/Abitha-Rao/GirlMath.git
+```
 
-Categories: Food, Transport, Shopping, Bills, Entertainment, Health, Other — each with a distinct icon and color
+```bash
+cd GirlMath
+```
 
-Edit/delete: Swipe left on any expense to reveal edit/delete actions
+```bash
+npm install
+```
 
-Data should persist (use local storage or Supabase if you set up backend)
-
-Vibe: Feels expensive, calm, and fast — not cluttered, not playful/cartoonish. The kind of app where opening it to log a coffee purchase feels satisfying rather than like a chore.
-
-This project was built with [Lovable](https://lovable.dev).
-
-**Live app**: https://luxe-cents.lovable.app
-
-## Build with Lovable
-
-Continue developing this project in the [Lovable editor](https://lovable.dev/projects/97fb5bab-c6b4-4df4-b567-a6331cf7f2fa).
-
-- **Ship faster**: describe what you want to build and Lovable handles the code.
-- **Stay in sync**: every change made in Lovable is committed straight to this repository.
-- **Full ownership**: this code is yours. Push to `main` on GitHub and your changes sync back into Lovable, ready for your next prompt.
-
-## Development
-
-Prefer working locally? You need Node.js and npm — [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating).
-
-```sh
-git clone <this-repository-url>
-cd <repository-name>
-npm i
+```bash
 npm run dev
 ```
+
+Then open http://localhost:8080.
+
+I checked that the app installs, builds and starts this way. I did not check signing in from a local copy. Google sign-in goes through Lovable's hosted sign-in service and may only work on the live site; email and password goes straight to Supabase.
+
+## Privacy
+
+- The one data table, `expenses`, has row-level security turned on. In plain terms, the database itself checks who is asking and only lets a signed-in person read, add, change or delete their own rows.
+- The rule is defined in [supabase/migrations](supabase/migrations). It has not been independently security-tested.
+
+## Where things are
+
+| File | What it holds |
+| --- | --- |
+| [src/routes/_authenticated/index.tsx](src/routes/_authenticated/index.tsx) | The home screen: monthly total, breakdown, expense list |
+| [src/routes/auth.tsx](src/routes/auth.tsx) | The sign-in and sign-up screen |
+| [src/components/AddExpenseSheet.tsx](src/components/AddExpenseSheet.tsx) | The add and edit sheet |
+| [src/components/CategoryBreakdown.tsx](src/components/CategoryBreakdown.tsx) | The category chart |
+| [src/lib/expenses.ts](src/lib/expenses.ts) | The categories, and reading and saving expenses |
+| [supabase/migrations](supabase/migrations) | The database table and its access rule |
+
+## Status and limits
+
+- A working personal project built with [Lovable](https://lovable.dev), an AI app builder, on React, TanStack Start and Supabase.
+- Rupees only. The currency is fixed in the code.
+- The six categories are fixed; you cannot add your own.
+- No budgets, no recurring expenses, no export, no bank or UPI import. Every expense is typed in by hand.
+- The breakdown covers the current month only. Older expenses appear in the list but there is no month-by-month view.
+- Nothing can be saved while offline.
+- There are no automated tests.
+- `AGENTS.md` is a note for AI coding tools. Its one rule matters to people too: this repo syncs with Lovable, so do not rewrite history that is already pushed (no force-push, rebase or amend).
